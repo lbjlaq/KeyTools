@@ -41,12 +41,12 @@ KeyTools is a powerful Microsoft product key verification and management tool. I
    
    **For Windows:**
    ```
-   %APPDATA%\KeyTools\config\
+   %APPDATA%\KeyTools
    ```
 
    **For macOS:**
    ```
-   ~/Library/Application Support/KeyTools/config/
+   ~/.KeyTools/config/
    ```
 
    > ℹ️ The application will NOT function correctly without these configuration files!
@@ -128,12 +128,12 @@ KeyTools是一款功能强大的微软产品密钥验证和管理工具。它提
    
    **Windows系统：**
    ```
-   %APPDATA%\KeyTools\config\
+   %APPDATA%\KeyTools
    ```
 
    **macOS系统：**
    ```
-   ~/Library/Application Support/KeyTools/config/
+   ~/.KeyTools/config/
    ```
 
    > ℹ️ 没有这些配置文件，应用程序将无法正常运行！
