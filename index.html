@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KeyTools - 专业密钥验证与管理工具</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        :root {
+            /* FlyonUI 配色方案 */
+            --primary: #5a67d8;
+            --primary-dark: #434190;
+            --primary-light: #c3dafe;
+            --accent: #00d1b2;
+            --accent-light: #9eebcf;
+            --dark: #1a202c;
+            --darker: #171923;
+            --light: #f7fafc;
+            --gray: #a0aec0;
+            --gray-dark: #4a5568;
+            --card-bg: #2d3748;
+            --header-bg: rgba(26, 32, 44, 0.95);
+            --success: #48bb78;
+            --warning: #ecc94b;
+            --danger: #f56565;
+            --text-primary: #f7fafc;
+            --text-secondary: #e2e8f0;
+            --text-tertiary: #a0aec0;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+            --shadow-lg: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+            --shadow-xl: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+            --shadow-2xl: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
+            --transition-fast: 0.2s all ease;
+            --transition-medium: 0.3s all ease;
+            --transition-slow: 0.5s all ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background: var(--dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            background-image: 
+                linear-gradient(to bottom right, rgba(49, 130, 206, 0.05), rgba(79, 209, 197, 0.05)),
+                radial-gradient(circle at 40% 20%, rgba(76, 81, 191, 0.08) 0%, transparent 30%),
+                radial-gradient(circle at 80% 80%, rgba(120, 255, 214, 0.08) 0%, transparent 30%);
+            background-attachment: fixed;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background: var(--header-bg);
+            padding: 1.5rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow-md);
+            transition: var(--transition-medium);
+        }
+        
+        header.scrolled {
+            padding: 0.8rem 0;
+            background: rgba(26, 32, 44, 0.98);
+        }
+        
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            font-weight: 700;
+            font-size: 2.2rem;
+            color: var(--primary-light);
+            letter-spacing: -0.5px;
+            position: relative;
+        }
+        
+        .logo img {
+            width: 40px;
+            height: 40px;
+            margin-right: 12px;
+            filter: drop-shadow(0 0 10px rgba(0, 209, 178, 0.5)) drop-shadow(0 0 20px rgba(0, 209, 178, 0.3));
+        }
+        
+        .logo::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 50%;
+            height: 3px;
+            background: linear-gradient(to right, var(--accent), transparent);
+        }
+        
+        .nav-links {
+            display: flex;
+            align-items: center;
+        }
+        
+        .github-link {
+            display: inline-flex;
+            align-items: center;
+            margin-right: 20px;
+            color: var(--primary-light);
+            font-size: 1.1rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: var(--transition-medium);
+            padding: 10px 20px;
+            border-radius: 8px;
+            background: rgba(90, 103, 216, 0.1);
+            border: 1px solid rgba(90, 103, 216, 0.2);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .github-link:hover {
+            color: var(--light);
+            background: rgba(90, 103, 216, 0.2);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .github-link i {
+            margin-right: 8px;
+            font-size: 1.2em;
+        }
+        
+        .language-switch {
+            background: rgba(255, 255, 255, 0.07);
+            border-radius: 8px;
+            padding: 8px 15px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            display: flex;
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .language-switch:hover {
+            background: rgba(255, 255, 255, 0.12);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .hero {
+            padding: 12rem 0 8rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .hero-bg::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            top: -50%;
+            left: -50%;
+            background: 
+                radial-gradient(circle at 25% 25%, rgba(90, 103, 216, 0.12) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(0, 209, 178, 0.12) 0%, transparent 50%);
+            animation: rotate 60s linear infinite;
+        }
+        
+        .hero-bg::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, transparent 70%, var(--dark) 100%);
+        }
+        
+        @keyframes rotate {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(to right, var(--text-primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: inline-block;
+            letter-spacing: -1.5px;
+        }
+        
+        .hero p {
+            font-size: 1.25rem;
+            max-width: 700px;
+            margin: 0 auto 3rem;
+            color: var(--text-tertiary);
+            font-weight: 400;
+            line-height: 1.7;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--primary);
+            color: var(--light);
+            padding: 12px 28px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: var(--transition-medium);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            box-shadow: var(--shadow-md), 0 0 0 0 var(--primary-light);
+            transform: translateY(0);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg), 0 0 0 4px rgba(90, 103, 216, 0.15);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+            box-shadow: var(--shadow-sm), 0 0 0 2px rgba(90, 103, 216, 0.1);
+        }
+        
+        .btn i {
+            margin-right: 8px;
+            font-size: 1.1rem;
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: var(--primary-light);
+            border: 2px solid var(--primary);
+            box-shadow: none;
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(90, 103, 216, 0.1);
+            color: var(--light);
+            box-shadow: 0 0 0 4px rgba(90, 103, 216, 0.1);
+        }
+        
+        .btn-accent {
+            background: var(--accent);
+            box-shadow: var(--shadow-md), 0 0 0 0 var(--accent-light);
+        }
+        
+        .btn-accent:hover {
+            box-shadow: var(--shadow-lg), 0 0 0 4px rgba(0, 209, 178, 0.15);
+        }
+        
+        .features {
+            padding: 8rem 0;
+            background: var(--darker);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .features::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: 
+                linear-gradient(135deg, rgba(49, 130, 206, 0.03) 0%, transparent 50%),
+                linear-gradient(225deg, rgba(0, 209, 178, 0.03) 0%, transparent 50%);
+            z-index: 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 4rem;
+            font-size: 2.5rem;
+            color: var(--text-primary);
+            font-weight: 700;
+            position: relative;
+            letter-spacing: -0.5px;
+        }
+        
+        .section-title span {
+            color: var(--accent);
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            border-radius: 2px;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .feature-card {
+            background: rgba(45, 55, 72, 0.5);
+            border-radius: 12px;
+            padding: 40px 30px;
+            transition: var(--transition-medium);
+            position: relative;
+            overflow: hidden;
+            height: 100%;
+            border: 1px solid rgba(160, 174, 192, 0.1);
+            backdrop-filter: blur(5px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(90, 103, 216, 0.05) 0%, transparent 100%);
+            opacity: 0;
+            transition: var(--transition-medium);
+        }
+        
+        .feature-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 0;
+            background: linear-gradient(to bottom, var(--primary), var(--accent));
+            transition: var(--transition-slow);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-xl);
+            border-color: rgba(160, 174, 192, 0.15);
+        }
+        
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+        
+        .feature-card:hover::after {
+            height: 100%;
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 25px;
+            color: var(--accent);
+            display: inline-block;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .feature-icon::before {
+            content: '';
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(0, 209, 178, 0.1);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: -1;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+            position: relative;
+            color: var(--text-secondary);
+        }
+        
+        .feature-card p {
+            color: var(--text-tertiary);
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+        
+        .screenshots {
+            padding: 8rem 0;
+            background: var(--dark);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .screenshots::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 10% 10%, rgba(90, 103, 216, 0.03) 0%, transparent 30%),
+                radial-gradient(circle at 90% 90%, rgba(0, 209, 178, 0.03) 0%, transparent 30%);
+            z-index: 0;
+        }
+        
+        .screenshots-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 40px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .screenshot-wrapper {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-xl);
+            width: 100%;
+            max-width: 500px;
+            transition: var(--transition-medium);
+            transform: perspective(1000px) rotateY(0deg) rotateX(0deg);
+        }
+        
+        .screenshot-wrapper:hover {
+            transform: perspective(1000px) rotateY(-5deg) rotateX(5deg);
+            box-shadow: 
+                var(--shadow-2xl),
+                0 0 40px rgba(90, 103, 216, 0.2),
+                0 0 80px rgba(0, 209, 178, 0.1);
+        }
+        
+        .screenshot {
+            width: 100%;
+            border-radius: 12px;
+            transition: var(--transition-medium);
+            display: block;
+        }
+        
+        .screenshot-wrapper::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(90, 103, 216, 0.1) 0%, rgba(0, 209, 178, 0.1) 100%);
+            opacity: 0;
+            transition: var(--transition-medium);
+            pointer-events: none;
+        }
+        
+        .screenshot-wrapper:hover::after {
+            opacity: 1;
+        }
+        
+        .download {
+            padding: 8rem 0;
+            background: var(--darker);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .download::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: 
+                linear-gradient(45deg, rgba(49, 130, 206, 0.03) 0%, transparent 50%),
+                linear-gradient(135deg, rgba(0, 209, 178, 0.03) 0%, transparent 50%);
+            z-index: 0;
+        }
+        
+        .download-options {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-top: 3rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .download-option {
+            background: rgba(45, 55, 72, 0.5);
+            border-radius: 12px;
+            padding: 40px 30px;
+            width: 320px;
+            transition: var(--transition-medium);
+            border: 1px solid rgba(160, 174, 192, 0.1);
+            backdrop-filter: blur(5px);
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+        
+        .download-option::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(90, 103, 216, 0.05) 0%, transparent 100%);
+            opacity: 0;
+            transition: var(--transition-medium);
+        }
+        
+        .download-option:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-xl);
+            border-color: rgba(160, 174, 192, 0.15);
+        }
+        
+        .download-option:hover::before {
+            opacity: 1;
+        }
+        
+        .download-option h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--accent);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .download-option h3 i {
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+        
+        .download-option p {
+            color: var(--text-tertiary);
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+        
+        .disclaimer {
+            padding: 6rem 0;
+            background: var(--dark);
+            text-align: center;
+            position: relative;
+        }
+        
+        .disclaimer p {
+            max-width: 800px;
+            margin: 0 auto;
+            font-size: 0.95rem;
+            color: var(--text-tertiary);
+            line-height: 1.8;
+            background: rgba(45, 55, 72, 0.3);
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid rgba(160, 174, 192, 0.1);
+            position: relative;
+            z-index: 1;
+        }
+        
+        footer {
+            background: var(--darker);
+            padding: 3rem 0;
+            text-align: center;
+            position: relative;
+        }
+        
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(160, 174, 192, 0.2), transparent);
+        }
+        
+        footer p {
+            color: var(--text-tertiary);
+            font-size: 0.95rem;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .hero {
+                padding: 10rem 0 6rem;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+            
+            .btn {
+                display: block;
+                width: 100%;
+                margin-bottom: 15px;
+            }
+            
+            .download-options {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .feature-card {
+                padding: 30px 20px;
+            }
+        }
+        
+        /* 动画 */
+        @keyframes fadeInUp {
+            from { 
+                opacity: 0; 
+                transform: translateY(20px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+        
+        .animate {
+            opacity: 0;
+        }
+        
+        .animate.active {
+            animation: fadeInUp 0.8s ease forwards;
+        }
+        
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+        .delay-5 { animation-delay: 0.5s; }
+        .delay-6 { animation-delay: 0.6s; }
+        
+        /* 语言切换样式 */
+        .en-content, .zh-content {
+            display: none;
+        }
+        
+        .lang-en .en-content {
+            display: block;
+        }
+        
+        .lang-zh .zh-content {
+            display: block;
+        }
+        
+        /* 毛玻璃效果 */
+        .glass {
+            background: rgba(45, 55, 72, 0.5);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            border: 1px solid rgba(160, 174, 192, 0.1);
+        }
+        
+        /* 浮动效果 */
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+            100% {
+                transform: translateY(0px);
+            }
+        }
+        
+        .float {
+            animation: float 4s ease-in-out infinite;
+        }
+        
+        /* 闪光效果 */
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }
+        
+        .shimmer {
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+            background-size: 200% 100%;
+            animation: shimmer 3s infinite;
+        }
+        
+        @keyframes glow {
+            0% {
+                text-shadow: 0 0 5px rgba(0, 209, 178, 0.3);
+            }
+            50% {
+                text-shadow: 0 0 20px rgba(0, 209, 178, 0.5), 0 0 30px rgba(0, 209, 178, 0.3);
+            }
+            100% {
+                text-shadow: 0 0 5px rgba(0, 209, 178, 0.3);
+            }
+        }
+        
+        .glow-effect {
+            animation: glow 2s infinite;
+        }
+        
+        .logo span {
+            animation: glow 2s infinite;
+        }
+    </style>
+</head>
+<body class="lang-zh">
+    <header id="header">
+        <div class="container nav-container">
+            <div class="logo">
+                <img src="icons/app.png" alt="KeyTools Logo" style="width: 40px; height: 40px; margin-right: 12px;">
+                <span>KeyTools</span>
+            </div>
+            <div class="nav-links">
+                <a href="https://github.com/lbjlaq/KeyTools" class="github-link">
+                    <span class="zh-content"><i class="fab fa-github"></i> GitHub项目</span>
+                    <span class="en-content"><i class="fab fa-github"></i> GitHub Project</span>
+                </a>
+                <div class="language-switch" id="langSwitch">
+                    <span class="zh-content">English</span>
+                    <span class="en-content">中文</span>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="container">
+            <h1 class="animate">
+                <span class="zh-content">KeyTools 密钥验证与管理工具</span>
+                <span class="en-content">KeyTools Key Verification</span>
+            </h1>
+            <p class="animate delay-1">
+                <span class="zh-content">专业的微软产品密钥验证工具，提供批量检测、多级验证策略和全面的密钥管理功能</span>
+                <span class="en-content">Professional Microsoft product key verification tool with batch detection, multi-level validation strategies and comprehensive key management</span>
+            </p>
+            <div class="animate delay-2">
+                <a href="#download" class="btn btn-accent">
+                    <span class="zh-content"><i class="fas fa-download"></i> 立即下载</span>
+                    <span class="en-content"><i class="fas fa-download"></i> Download Now</span>
+                </a>
+            </div>
+            
+            <!-- 悬浮装饰元素 -->
+            <div class="hero-decorations" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; overflow: hidden; pointer-events: none; z-index: -1;">
+                <div class="float" style="position: absolute; top: 20%; left: 15%; width: 8px; height: 8px; background: var(--primary); border-radius: 50%; opacity: 0.5; animation-delay: 0s;"></div>
+                <div class="float" style="position: absolute; top: 40%; left: 80%; width: 12px; height: 12px; background: var(--accent); border-radius: 50%; opacity: 0.6; animation-delay: 1s;"></div>
+                <div class="float" style="position: absolute; top: 70%; left: 30%; width: 10px; height: 10px; background: var(--primary-light); border-radius: 50%; opacity: 0.4; animation-delay: 2s;"></div>
+                <div class="float" style="position: absolute; top: 60%; left: 70%; width: 6px; height: 6px; background: var(--accent-light); border-radius: 50%; opacity: 0.5; animation-delay: 1.5s;"></div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title animate">
+                <span class="zh-content">强大<span>功能</span></span>
+                <span class="en-content">Key <span>Features</span></span>
+            </h2>
+            <div class="features-grid">
+                <div class="feature-card animate delay-1">
+                    <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+                    <h3>
+                        <span class="zh-content">多级验证策略</span>
+                        <span class="en-content">Multi-level Verification</span>
+                    </h3>
+                    <p>
+                        <span class="zh-content">选择验证强度，节省激活次数，避免不必要的服务器请求</span>
+                        <span class="en-content">Choose verification intensity to save activation attempts and avoid unnecessary server requests</span>
+                    </p>
+                </div>
+                <div class="feature-card animate delay-2">
+                    <div class="feature-icon"><i class="fas fa-clipboard-list"></i></div>
+                    <h3>
+                        <span class="zh-content">批量密钥验证</span>
+                        <span class="en-content">Batch Verification</span>
+                    </h3>
+                    <p>
+                        <span class="zh-content">一次操作处理多个密钥，高效率完成大量密钥的检测工作</span>
+                        <span class="en-content">Process multiple keys in one operation, efficiently complete the detection of a large number of keys</span>
+                    </p>
+                </div>
+                <div class="feature-card animate delay-3">
+                    <div class="feature-icon"><i class="fas fa-database"></i></div>
+                    <h3>
+                        <span class="zh-content">密钥管理</span>
+                        <span class="en-content">Key Management</span>
+                    </h3>
+                    <p>
+                        <span class="zh-content">按类型和产品组织密钥，搜索筛选，轻松管理大量密钥数据</span>
+                        <span class="en-content">Organize keys by type and product, search and filter, easily manage large amounts of key data</span>
+                    </p>
+                </div>
+                <div class="feature-card animate delay-4">
+                    <div class="feature-icon"><i class="fas fa-calculator"></i></div>
+                    <h3>
+                        <span class="zh-content">MAK剩余次数查询</span>
+                        <span class="en-content">MAK Query</span>
+                    </h3>
+                    <p>
+                        <span class="zh-content">检查MAK密钥的剩余激活次数，实时掌握密钥使用情况</span>
+                        <span class="en-content">Check remaining activations for MAK keys, keep track of key usage in real time</span>
+                    </p>
+                </div>
+                <div class="feature-card animate delay-5">
+                    <div class="feature-icon"><i class="fas fa-moon"></i></div>
+                    <h3>
+                        <span class="zh-content">深色/浅色主题</span>
+                        <span class="en-content">Dark/Light Theme</span>
+                    </h3>
+                    <p>
+                        <span class="zh-content">支持深色和浅色主题切换，保护您的眼睛，提供舒适的使用体验</span>
+                        <span class="en-content">Support for dark and light theme switching, protect your eyes and provide a comfortable user experience</span>
+                    </p>
+                </div>
+                <div class="feature-card animate delay-6">
+                    <div class="feature-icon"><i class="fas fa-language"></i></div>
+                    <h3>
+                        <span class="zh-content">多语言支持</span>
+                        <span class="en-content">Multi-language</span>
+                    </h3>
+                    <p>
+                        <span class="zh-content">支持中文和英文界面，满足不同用户的语言偏好</span>
+                        <span class="en-content">Supports both Chinese and English interfaces to meet different users' language preferences</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="usage">
+        <div class="container">
+            <h2 class="section-title animate">
+                <span class="zh-content">使用<span>说明</span></span>
+                <span class="en-content">How To <span>Use</span></span>
+            </h2>
+            <div class="usage-content glass animate delay-1" style="padding: 40px; border-radius: 12px; margin-bottom: 3rem;">
+                <h3 style="color: var(--accent); margin-bottom: 1.5rem; font-size: 1.6rem; font-weight: 600;">
+                    <span class="zh-content">⚠️ 重要：首次运行设置</span>
+                    <span class="en-content">⚠️ IMPORTANT: First-Time Setup</span>
+                </h3>
+                <p style="color: var(--text-secondary); line-height: 1.8; margin-bottom: 1.5rem;">
+                    <span class="zh-content">
+                        为了使应用程序正常运行，您需要手动复制配置文件：<br>
+                        1. <strong>首先启动应用程序</strong><br>
+                        2. <strong>转到应用程序中的"关于"标签页</strong><br>
+                        3. <strong>点击关于页面上显示的配置路径</strong>以打开文件夹<br>
+                        4. <strong>将 <code style="background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 4px;">pkeyconfigs</code> 文件夹</strong>复制到此位置
+                    </span>
+                    <span class="en-content">
+                        For the application to function correctly, you need to manually copy the configuration files:<br>
+                        1. <strong>First, launch the application</strong><br>
+                        2. <strong>Go to the "About" tab</strong> in the application<br>
+                        3. <strong>Click on the configuration path</strong> shown in the About page to open the folder<br>
+                        4. <strong>Copy the <code style="background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 4px;">pkeyconfigs</code> folder</strong> into this location
+                    </span>
+                </p>
+                <div style="background: rgba(45, 55, 72, 0.5); padding: 20px; border-radius: 8px; margin-bottom: 2rem;">
+                    <h4 style="color: var(--primary-light); margin-bottom: 10px; font-size: 1.2rem;">
+                        <span class="zh-content">配置文件路径：</span>
+                        <span class="en-content">Configuration paths:</span>
+                    </h4>
+                    <div style="margin-bottom: 10px;">
+                        <span style="color: var(--accent-light); font-weight: 500;">Windows:</span>
+                        <pre style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 6px; overflow-x: auto; margin-top: 5px; color: var(--text-secondary);">%APPDATA%\KeyTools\config\</pre>
+                    </div>
+                    <div>
+                        <span style="color: var(--accent-light); font-weight: 500;">macOS:</span>
+                        <pre style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 6px; overflow-x: auto; margin-top: 5px; color: var(--text-secondary);">~/Library/Application Support/KeyTools/config/</pre>
+                    </div>
+                </div>
+                <div style="color: var(--warning); padding: 15px; background: rgba(236, 201, 75, 0.1); border-left: 4px solid var(--warning); border-radius: 4px; margin-bottom: 2rem;">
+                    <span class="zh-content">没有这些配置文件，应用程序将无法正常运行！</span>
+                    <span class="en-content">The application will NOT function correctly without these configuration files!</span>
+                </div>
+            </div>
+            
+            <div class="usage-steps-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
+                <div class="usage-step animate delay-2 glass" style="padding: 30px; border-radius: 12px; height: 100%;">
+                    <div style="display: flex; align-items: center; margin-bottom: 20px;">
+                        <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--primary); color: var(--light); display: flex; justify-content: center; align-items: center; font-weight: 700; margin-right: 15px;">1</div>
+                        <h3 style="color: var(--text-primary); font-size: 1.4rem; font-weight: 600;">
+                            <span class="zh-content">密钥验证</span>
+                            <span class="en-content">Key Verification</span>
+                        </h3>
+                    </div>
+                    <ul style="color: var(--text-secondary); line-height: 1.8; list-style-type: none; padding-left: 0;">
+                        <li style="margin-bottom: 10px; position: relative; padding-left: 25px;">
+                            <i class="fas fa-caret-right" style="position: absolute; left: 0; top: 5px; color: var(--accent);"></i>
+                            <span class="zh-content">在"检测"标签页输入产品密钥（每行一个）</span>
+                            <span class="en-content">Enter product keys in the "Check" tab (one key per line)</span>
+                        </li>
+                        <li style="margin-bottom: 10px; position: relative; padding-left: 25px;">
+                            <i class="fas fa-caret-right" style="position: absolute; left: 0; top: 5px; color: var(--accent);"></i>
+                            <span class="zh-content">选择验证级别（0-2）</span>
+                            <span class="en-content">Select verification level (0-2)</span>
+                        </li>
+                        <li style="position: relative; padding-left: 25px;">
+                            <i class="fas fa-caret-right" style="position: absolute; left: 0; top: 5px; color: var(--accent);"></i>
+                            <span class="zh-content">点击"批量检测"进行验证</span>
+                            <span class="en-content">Click "Batch Check" to verify</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="usage-step animate delay-3 glass" style="padding: 30px; border-radius: 12px; height: 100%;">
+                    <div style="display: flex; align-items: center; margin-bottom: 20px;">
+                        <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--primary); color: var(--light); display: flex; justify-content: center; align-items: center; font-weight: 700; margin-right: 15px;">2</div>
+                        <h3 style="color: var(--text-primary); font-size: 1.4rem; font-weight: 600;">
+                            <span class="zh-content">密钥管理</span>
+                            <span class="en-content">Key Management</span>
+                        </h3>
+                    </div>
+                    <ul style="color: var(--text-secondary); line-height: 1.8; list-style-type: none; padding-left: 0;">
+                        <li style="margin-bottom: 10px; position: relative; padding-left: 25px;">
+                            <i class="fas fa-caret-right" style="position: absolute; left: 0; top: 5px; color: var(--accent);"></i>
+                            <span class="zh-content">在"管理"标签页查看所有已验证密钥</span>
+                            <span class="en-content">View all verified keys in the "Manage" tab</span>
+                        </li>
+                        <li style="margin-bottom: 10px; position: relative; padding-left: 25px;">
+                            <i class="fas fa-caret-right" style="position: absolute; left: 0; top: 5px; color: var(--accent);"></i>
+                            <span class="zh-content">通过类型或产品搜索和筛选密钥</span>
+                            <span class="en-content">Search and filter keys by type or product</span>
+                        </li>
+                        <li style="position: relative; padding-left: 25px;">
+                            <i class="fas fa-caret-right" style="position: absolute; left: 0; top: 5px; color: var(--accent);"></i>
+                            <span class="zh-content">右键点击任意密钥以复制或更新其状态</span>
+                            <span class="en-content">Right-click any key to copy or update its status</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="usage-step animate delay-4 glass" style="padding: 30px; border-radius: 12px; height: 100%;">
+                    <div style="display: flex; align-items: center; margin-bottom: 20px;">
+                        <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--primary); color: var(--light); display: flex; justify-content: center; align-items: center; font-weight: 700; margin-right: 15px;">3</div>
+                        <h3 style="color: var(--text-primary); font-size: 1.4rem; font-weight: 600;">
+                            <span class="zh-content">设置</span>
+                            <span class="en-content">Settings</span>
+                        </h3>
+                    </div>
+                    <ul style="color: var(--text-secondary); line-height: 1.8; list-style-type: none; padding-left: 0;">
+                        <li style="margin-bottom: 10px; position: relative; padding-left: 25px;">
+                            <i class="fas fa-caret-right" style="position: absolute; left: 0; top: 5px; color: var(--accent);"></i>
+                            <span class="zh-content">切换深色和浅色主题</span>
+                            <span class="en-content">Toggle between dark and light themes</span>
+                        </li>
+                        <li style="position: relative; padding-left: 25px;">
+                            <i class="fas fa-caret-right" style="position: absolute; left: 0; top: 5px; color: var(--accent);"></i>
+                            <span class="zh-content">在中文和英文之间切换语言</span>
+                            <span class="en-content">Switch between English and Chinese languages</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="screenshots">
+        <div class="container">
+            <h2 class="section-title animate">
+                <span class="zh-content">界面<span>预览</span></span>
+                <span class="en-content">User <span>Interface</span></span>
+            </h2>
+            <div class="screenshots-container">
+                <div class="screenshot-wrapper animate delay-1">
+                    <img src="screenshots/screenshot1.png" alt="KeyTools Screenshot 1" class="screenshot">
+                </div>
+                <div class="screenshot-wrapper animate delay-2">
+                    <img src="screenshots/screenshot2.png" alt="KeyTools Screenshot 2" class="screenshot">
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="download" id="download">
+        <div class="container">
+            <h2 class="section-title animate">
+                <span class="zh-content">立即<span>下载</span></span>
+                <span class="en-content">Download <span>Now</span></span>
+            </h2>
+            <div class="download-options">
+                <div class="download-option animate delay-1">
+                    <h3><i class="fab fa-windows"></i> Windows</h3>
+                    <p>
+                        <span class="zh-content">适用于Windows 10或更高版本</span>
+                        <span class="en-content">For Windows 10 or later</span>
+                    </p>
+                    <a href="https://github.com/lbjlaq/KeyTools/releases/download/1.0.0/keytools.exe" class="btn">
+                        <span class="zh-content">下载Windows版</span>
+                        <span class="en-content">Download for Windows</span>
+                    </a>
+                </div>
+                <div class="download-option animate delay-2">
+                    <h3><i class="fab fa-apple"></i> macOS (Intel)</h3>
+                    <p>
+                        <span class="zh-content">适用于Intel处理器的Mac电脑</span>
+                        <span class="en-content">For Mac with Intel processor</span>
+                    </p>
+                    <a href="https://github.com/lbjlaq/KeyTools/releases/download/1.0.0/KeyTools_Intel.dmg" class="btn">
+                        <span class="zh-content">下载Intel版</span>
+                        <span class="en-content">Download Intel version</span>
+                    </a>
+                </div>
+                <div class="download-option animate delay-3">
+                    <h3><i class="fab fa-apple"></i> macOS (ARM64)</h3>
+                    <p>
+                        <span class="zh-content">适用于M1/M2/M3处理器的Mac电脑</span>
+                        <span class="en-content">For Mac with M1/M2/M3 processor</span>
+                    </p>
+                    <a href="https://github.com/lbjlaq/KeyTools/releases/download/1.0.0/KeyTools_ARM64.dmg" class="btn">
+                        <span class="zh-content">下载ARM64版</span>
+                        <span class="en-content">Download ARM64 version</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="disclaimer">
+        <div class="container">
+            <h2 class="section-title animate">
+                <span class="zh-content">免责<span>声明</span></span>
+                <span class="en-content">Disclaimer</span>
+            </h2>
+            <p class="animate delay-1 glass">
+                <span class="zh-content">
+                    本工具仅提供用于教育和验证目的。KeyTools与微软公司没有任何关联，也未得到微软公司的认可或官方连接。
+                    对微软产品密钥的验证是为了帮助用户确认其已购买许可证的合法性。用户应只验证他们合法拥有或有权验证的密钥。
+                    KeyTools的开发者对本工具的任何滥用或违反任何服务条款的行为不承担责任。使用本软件的风险由您自行承担。
+                </span>
+                <span class="en-content">
+                    This tool is provided for educational and verification purposes only. KeyTools is not affiliated with, endorsed by, 
+                    or in any way officially connected with Microsoft Corporation. The verification of Microsoft product keys is done to help users 
+                    confirm the legitimacy of their purchased licenses. Users should only verify keys they legally own or have permission to verify. 
+                    The developers of KeyTools take no responsibility for any misuse of this tool or violation of any terms of service. 
+                    Use of this software is at your own risk.
+                </span>
+            </p>
+        </div>
+    </section>
+    
+    <footer>
+        <div class="container">
+            <p>
+                <span class="zh-content">© 2025 Ctrler. 保留所有权利。</span>
+                <span class="en-content">© 2025 Ctrler. All rights reserved.</span>
+            </p>
+        </div>
+    </footer>
+    
+    <script>
+        // 监听滚动，控制头部样式
+        document.addEventListener('DOMContentLoaded', function() {
+            const header = document.getElementById('header');
+            const animItems = document.querySelectorAll('.animate');
+            
+            function onScroll() {
+                // 处理头部样式
+                if (window.scrollY > 20) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+                
+                // 处理动画元素
+                animItems.forEach(item => {
+                    const itemTop = item.getBoundingClientRect().top;
+                    const windowHeight = window.innerHeight;
+                    
+                    if (itemTop < windowHeight * 0.9) {
+                        item.classList.add('active');
+                    }
+                });
+            }
+            
+            // 初始检查
+            onScroll();
+            
+            // 滚动时检查
+            window.addEventListener('scroll', onScroll);
+            
+            // 语言切换
+            const langSwitch = document.getElementById('langSwitch');
+            langSwitch.addEventListener('click', function() {
+                const body = document.body;
+                if (body.classList.contains('lang-zh')) {
+                    body.classList.remove('lang-zh');
+                    body.classList.add('lang-en');
+                    localStorage.setItem('language', 'en');
+                } else {
+                    body.classList.remove('lang-en');
+                    body.classList.add('lang-zh');
+                    localStorage.setItem('language', 'zh');
+                }
+            });
+            
+            // 尝试从本地存储加载语言设置
+            const savedLanguage = localStorage.getItem('language');
+            if (savedLanguage === 'en') {
+                document.body.classList.remove('lang-zh');
+                document.body.classList.add('lang-en');
+            }
+            
+            // 平滑滚动
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+
+            // 在脚本中添加根据系统语言设置页面语言的逻辑
+            const userLang = navigator.language || navigator.userLanguage;
+            if (userLang.includes('zh')) {
+                document.body.classList.add('lang-zh');
+            } else {
+                document.body.classList.add('lang-en');
+            }
+        });
+    </script>
+</body>
+</html> 
